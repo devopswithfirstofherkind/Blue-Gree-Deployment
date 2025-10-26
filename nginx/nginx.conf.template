@@ -1,0 +1,11 @@
+upstream backend_app {
+    server app_blue:8081 max_fails=1 fail_timeout=5s;
+    server app_green:8082 backup;
+}
+
+location /some/path/ {
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $APP_POOL;
+    proxy_set_header X-Release-Id $RELEASE_ID;
+    proxy_pass http://localhost:${PORT};
+}

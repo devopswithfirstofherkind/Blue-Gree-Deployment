@@ -1,0 +1,38 @@
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+    - ${PORT}:${NGINXPORT}
+    volumes:
+    - ./nginx.conf.template:/etc/nginx/templates/nginx.conf.template
+    - ./entrypoint.sh:/docker-entrypoint.d/entrypoint.sh
+    env_file:
+      - .env
+    depends_on:
+      - blue
+      - green
+
+  blue:
+    image: ${BLUE_IMAGE}
+    ports:
+    - ${BLUE_PORT}:${SERVER_PORT}
+    env_file:
+      - .env
+    environment:
+    - RELEASE_ID=${RELEASE_ID_BLUE}
+    - APP_POOL=blue
+
+  green:
+    image: ${GREEN_IMAGE}
+    ports:
+    - ${GREEN_PORT}:${SERVER_PORT}
+    env_file:
+      - .env
+    environment:
+    - RELEASE_ID=${RELEASE_ID_GREEN}
+    - APP_POOL=green
+
+
+
+

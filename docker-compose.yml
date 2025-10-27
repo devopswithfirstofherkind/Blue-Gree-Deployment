@@ -28,6 +28,7 @@ services:
       - ./.env
     environment:
     - APP_POOL=blue
+    - RELEASE_ID=${RELEASE_ID_BLUE}
     networks:
     - net
 
@@ -41,6 +42,7 @@ services:
       - ./.env
     environment:
     - APP_POOL=green
+    - RELEASE_ID=${RELEASE_ID_GREEN}
     networks:
     - net
   

@@ -1,18 +1,22 @@
+events {
+    worker_connections 1024;
+}
+
+
+
 http {
 
     upstream backend_app {
-        server app_blue:8081 max_fails=1 fail_timeout=5s;
-        server app_green:8082 backup;
+        server app_blue:${PORT} max_fails=1 fail_timeout=5s;
+        server app_green:${PORT} backup;
     }
 
     server {
-        listen ${PORT};
+        listen 80;
 
         location / {
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-App-Pool $APP_POOL;
-            proxy_set_header X-Release-Id $RELEASE_ID;
             proxy_pass http://backend_app;
 
             proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
@@ -20,7 +24,7 @@ http {
 
             proxy_connect_timeout 1s;
             proxy_read_timeout 2s;
+            proxy_send_timeout 2s;
         }
     }
-
 }

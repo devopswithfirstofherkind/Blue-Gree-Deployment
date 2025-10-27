@@ -5,7 +5,7 @@ services:
     restart: always
     image: nginx:latest
     ports:
-    - ${PORT}:${NGINXPORT}
+    - ${PORT}:80
     volumes:
     - ./nginx.conf.template:/etc/nginx/templates/nginx.conf.template
     - ./entrypoint.sh:/docker-entrypoint.d/entrypoint.sh
@@ -15,28 +15,42 @@ services:
     depends_on:
       - blue
       - green
+    networks:
+    - net
 
   blue:
     container_name: app_blue
     restart: on-failure
     image: ${BLUE_IMAGE}
     ports:
-    - ${BLUE_PORT}:${SERVER_PORT}
+    - 8081:${PORT}
     env_file:
       - ./.env
     environment:
     - APP_POOL=blue
+    networks:
+    - net
 
   green:
     container_name: app_green
     restart: on-failure
     image: ${GREEN_IMAGE}
     ports:
-    - ${GREEN_PORT}:${SERVER_PORT}
+    - 8082:${PORT}
     env_file:
       - ./.env
     environment:
     - APP_POOL=green
+    networks:
+    - net
+  
+networks:
+  net:
+    driver: bridge
+
+
+
+  
 
 
 

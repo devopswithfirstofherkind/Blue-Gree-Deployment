@@ -51,4 +51,15 @@ def monitor():
                 rate = (sum(errors) / len(errors)) * 100
                 now = time.time()
                 if rate > ERROR_RATE_THRESHOLD and now - last_alert_time > ALERT_COOLDOWN_SEC:
-                    send_slack(f":rotating_light: High error rate detected
+                    send_slack(f":rotating_light: High error rate detected ({rate:.2f}%) in {pool} pool")
+                    last_alert_time = now
+
+            # Failover check
+            if last_pool and pool != last_pool and pool != "-":
+                send_slack(f":repeat: Failover detected! {last_pool} → {pool}")
+                last_alert_time = time.time()
+
+            last_pool = pool
+
+if __name__ == "__main__":
+    monitor()

@@ -19,8 +19,8 @@ def send_slack(msg):
 
 def monitor():
     global last_alert_time, last_pool
-    with open(LOG_PATH, "r") as f:
-        f.seek(0,2)
+    with open(LOG_PATH, "r", errors="ignore") as f:
+        f.seek(0, os.SEEK_END)  # safer version
         while True:
             line = f.readline()
             if not line:

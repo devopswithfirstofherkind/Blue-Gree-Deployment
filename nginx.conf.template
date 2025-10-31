@@ -32,6 +32,9 @@ http {
             proxy_set_header X-Real-IP $remote_addr;
             proxy_pass http://backend_app;
 
+            proxy_set_header X-App-Pool $upstream_addr;
+            proxy_set_header X-Release-Id $request_id;
+
             proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
             proxy_next_upstream_tries 2;
 
